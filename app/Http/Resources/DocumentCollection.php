@@ -22,7 +22,7 @@ class DocumentCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => $this->collection->transform(function ($document) {
+            'document' => $this->collection->transform(function ($document) {
                 return [
                     'id' => $document->id,
                     'status' => $document->status,

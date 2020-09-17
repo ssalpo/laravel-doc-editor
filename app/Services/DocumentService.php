@@ -19,6 +19,7 @@ class DocumentService
      *
      * @param DocumentDTO $documentDTO
      * @return Document
+     * @throws DocumentAlreadyPublishedException
      */
     public function save(DocumentDTO $documentDTO)
     {

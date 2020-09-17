@@ -35,10 +35,12 @@ class DocumentController extends Controller
     /**
      * Сохраняет документ
      * @param \Illuminate\Http\Request $request
+     * @return JsonResource
+     * @throws \App\Exceptions\DocumentAlreadyPublishedException
      */
     public function store(Request $request)
     {
-        $document = $this->documentService->save(new DocumentDTO($request->all()));
+        $document = $this->documentService->save(new DocumentDTO());
 
         return new DocumentResource($document);
     }
@@ -60,13 +62,14 @@ class DocumentController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param int $id
      * @return JsonResource
+     * @throws \App\Exceptions\DocumentAlreadyPublishedException
      */
     public function update(Request $request, $id)
     {
         $payload = $request->json('document.payload');
 
         if (!is_array($payload) || (is_array($payload) && count($payload) === 0)) {
-            abort(400, 'payload не передан');
+            abort(400, 'Некорректный параметр payload передан');
         }
 
         $document = $this->documentService->save(
