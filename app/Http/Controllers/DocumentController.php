@@ -38,18 +38,20 @@ class DocumentController extends Controller
      */
     public function store(Request $request)
     {
-        $this->documentService->save(new DocumentDTO($request->all()));
+        $document = $this->documentService->save(new DocumentDTO($request->all()));
+
+        return new DocumentResource($document);
     }
 
     /**
      * Возвращает документ по id
      *
      * @param Document $document
-     * @return array
+     * @return JsonResource
      */
     public function show(Document $document)
     {
-        return ['document' => new DocumentResource($document)];
+        return new DocumentResource($document);
     }
 
     /**
@@ -57,20 +59,29 @@ class DocumentController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return JsonResource
      */
     public function update(Request $request, $id)
     {
-        //
+        $document = $this->documentService->save(
+            new DocumentDTO(
+                array_merge(['id' => $id], $request->get('document'))
+            )
+        );
+
+        return new DocumentResource($document);
     }
 
     /**
      * Публикует документ
      *
      * @param int $id
+     * @return JsonResource
      */
     public function publish($id)
     {
-        $this->documentService->publish(new DocumentDTO(['id' => $id]));
+        $document = $this->documentService->publish(new DocumentDTO(['id' => $id]));
+
+        return new DocumentResource($document);
     }
 }

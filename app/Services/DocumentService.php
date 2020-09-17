@@ -21,16 +21,31 @@ class DocumentService
      */
     public function save(DocumentDTO $documentDTO)
     {
-        return Document::create([
-            'status' => $documentDTO->status ?? Document::DRAFT,
+        // Если id есть, то берем из базы и возвращаем для сохранения данных, иначе создаем новый
+        $document = $documentDTO->id
+            ? Document::findOrFail($documentDTO->id)
+            : new Document();
+
+        $data = [
+            'status' => $documentDTO->status ?? ($document && $document->status ? $document->status : Document::DRAFT),
             'payload' => $documentDTO->payload
-        ]);
+        ];
+
+        // Ставим дефолтный статус
+//        if (!$documentDTO->id && !$documentDTO->status) {
+//            $document['status'] = Document::DRAFT;
+//        }
+
+        $document->fill($data)->save();
+
+        return $document;
     }
 
     /**
      * Публикует документ
      *
      * @param DocumentDTO $documentDTO
+     * @return Document
      */
     public function publish(DocumentDTO $documentDTO)
     {
@@ -39,5 +54,7 @@ class DocumentService
         if ($document->status !== Document::PUBLISHED) {
             $document->update(['status' => Document::PUBLISHED]);
         }
+
+        return $document;
     }
 }
