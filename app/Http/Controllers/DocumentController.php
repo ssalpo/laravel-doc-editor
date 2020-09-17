@@ -63,9 +63,15 @@ class DocumentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $payload = $request->json('document.payload');
+
+        if (!is_array($payload) || (is_array($payload) && count($payload) === 0)) {
+            abort(400, 'payload не передан');
+        }
+
         $document = $this->documentService->save(
             new DocumentDTO(
-                array_merge(['id' => $id], $request->get('document'))
+                array_merge(['id' => $id], ['payload' => $payload])
             )
         );
 

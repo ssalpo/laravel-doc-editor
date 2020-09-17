@@ -61,4 +61,14 @@ class Document extends Model
             self::PUBLISHED,
         ];
     }
+
+    /**
+     * Проверяет опубликован ли документ
+     *
+     * @return bool
+     */
+    public function isPublished()
+    {
+        return $this->status === self::PUBLISHED;
+    }
 }

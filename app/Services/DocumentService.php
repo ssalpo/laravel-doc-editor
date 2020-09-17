@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Document;
 use App\DTO\DocumentDTO;
+use App\Exceptions\DocumentAlreadyPublishedException;
 
 /**
  * Сервис для работы с документами
@@ -31,10 +32,9 @@ class DocumentService
             'payload' => $documentDTO->payload
         ];
 
-        // Ставим дефолтный статус
-//        if (!$documentDTO->id && !$documentDTO->status) {
-//            $document['status'] = Document::DRAFT;
-//        }
+        if ($document->id && $document->isPublished()) {
+            throw new DocumentAlreadyPublishedException('Документ уже опубликован', 400);
+        }
 
         $document->fill($data)->save();
 
