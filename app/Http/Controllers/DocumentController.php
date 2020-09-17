@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Document;
 use App\DTO\DocumentDTO;
+use App\Http\Resources\DocumentCollection;
 use App\Http\Resources\DocumentResource;
 use App\Services\DocumentService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class DocumentController extends Controller
 {
@@ -14,7 +16,6 @@ class DocumentController extends Controller
      * @var DocumentService
      */
     private $documentService;
-
 
     public function __construct(DocumentService $document)
     {
@@ -24,10 +25,11 @@ class DocumentController extends Controller
     /**
      * Возвращает список всех документов
      *
-     * @return void
+     * @return JsonResource
      */
     public function index()
     {
+        return new DocumentCollection(Document::paginate(20));
     }
 
     /**
@@ -69,6 +71,6 @@ class DocumentController extends Controller
      */
     public function publish($id)
     {
-        //
+        $this->documentService->publish(new DocumentDTO(['id' => $id]));
     }
 }

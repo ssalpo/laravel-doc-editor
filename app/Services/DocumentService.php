@@ -13,11 +13,31 @@ use App\DTO\DocumentDTO;
  */
 class DocumentService
 {
-    public function save(DocumentDTO $document)
+    /**
+     * Создает новый документ
+     *
+     * @param DocumentDTO $documentDTO
+     * @return Document
+     */
+    public function save(DocumentDTO $documentDTO)
     {
         return Document::create([
-            'status' => $document->status,
-            'payload' => $document->payload
+            'status' => $documentDTO->status ?? Document::DRAFT,
+            'payload' => $documentDTO->payload
         ]);
+    }
+
+    /**
+     * Публикует документ
+     *
+     * @param DocumentDTO $documentDTO
+     */
+    public function publish(DocumentDTO $documentDTO)
+    {
+        $document = Document::findOrFail($documentDTO->id);
+
+        if ($document->status !== Document::PUBLISHED) {
+            $document->update(['status' => Document::PUBLISHED]);
+        }
     }
 }
